@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ダイエット大全 レシピアプリ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;background:#f8f6f3;color:#1a1a1a;min-height:100vh}
+.app{max-width:480px;margin:0 auto;padding:1rem;padding-bottom:3rem}
+
+/* ヒーローエリア */
+.hero{border-radius:16px;padding:1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:14px;transition:background 0.3s}
+.hero-icon{font-size:36px;flex-shrink:0}
+.hero-text h2{font-size:15px;font-weight:600;margin-bottom:5px;line-height:1.4}
+.hero-text p{font-size:12px;line-height:1.6}
+
+/* タブ */
+.tabs{display:flex;margin-bottom:1.25rem;border:1px solid #e0ddd8;border-radius:10px;overflow:hidden;background:#fff}
+.tab{flex:1;padding:10px 0;font-size:13px;font-weight:600;text-align:center;cursor:pointer;background:transparent;color:#888;border:none;transition:all 0.15s}
+.tab.active-s{background:#FBEAF0;color:#72243E}
+.tab.active-d{background:#E1F5EE;color:#0F6E56}
+.tab:not(:last-child){border-right:1px solid #e0ddd8}
+
+/* レシピ一覧 */
+.sec-lbl{font-size:12px;font-weight:600;color:#aaa;letter-spacing:0.06em;margin-bottom:12px}
+.card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1.5rem}
+.rcard{background:#fff;border:1px solid #ede9e3;border-radius:14px;padding:12px;cursor:pointer;transition:all 0.15s}
+.rcard:hover{border-color:#ccc;transform:translateY(-1px)}
+.rcard:active{transform:translateY(0)}
+.rcard-thumb{height:80px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:10px;overflow:hidden}
+.rcard-thumb img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+.rcard-title{font-size:13px;font-weight:600;color:#1a1a1a;line-height:1.4;margin-bottom:7px}
+.rcard-meta{display:flex;justify-content:space-between;align-items:center}
+.rcard-kcal{font-size:11px;color:#aaa}
+.fav-btn-sm{font-size:16px;cursor:pointer;background:none;border:none;padding:0;line-height:1}
+.fav-on{color:#D4537E}.fav-off{color:#ccc}
+
+/* 詳細ページ */
+.detail{display:none}.detail.on{display:block}
+.list.off{display:none}
+.back{font-size:13px;color:#993556;background:none;border:none;cursor:pointer;padding:0;margin-bottom:1.25rem;display:flex;align-items:center;gap:5px;font-weight:500}
+.dhero{height:180px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:72px;margin-bottom:1rem;overflow:hidden}
+.dhero img{width:100%;height:100%;object-fit:cover;border-radius:14px}
+.photo-strip{display:flex;gap:8px;margin-bottom:1rem;overflow-x:auto;padding-bottom:4px}
+.photo-strip img{width:100px;height:80px;object-fit:cover;border-radius:10px;flex-shrink:0;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s}
+.photo-strip img.active{border-color:#D4537E}
+.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;margin-bottom:8px;font-weight:600}
+.badge-s{background:#FBEAF0;color:#72243E}
+.badge-d{background:#E1F5EE;color:#0F6E56}
+.dtitle{font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:6px;line-height:1.3}
+.ddesc{font-size:13px;color:#666;line-height:1.7;margin-bottom:1rem}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1.25rem}
+.stat{background:#f8f6f3;border-radius:10px;padding:10px;text-align:center}
+.stat-v{font-size:15px;font-weight:700;color:#1a1a1a}
+.stat-l{font-size:11px;color:#aaa;margin-top:3px}
+.sec-h{font-size:13px;font-weight:700;color:#555;margin:1.25rem 0 8px;padding-bottom:6px;border-bottom:1px solid #ede9e3}
+.ing-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0ede8;font-size:13px}
+.ing-row:last-child{border-bottom:none}
+.ing-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ing-dot-s{background:#D4537E}
+.ing-dot-d{background:#1D9E75}
+.ing-n{color:#1a1a1a;flex:1}
+.ing-a{color:#888;font-size:12px;font-weight:500}
+.step-row{display:flex;gap:12px;margin-bottom:14px}
+.step-n{width:24px;height:24px;border-radius:50%;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-n-s{background:#FBEAF0;color:#72243E}
+.step-n-d{background:#E1F5EE;color:#0F6E56}
+.step-t{font-size:13px;color:#1a1a1a;line-height:1.7}
+.arrange-box{background:#f8f6f3;border-radius:12px;padding:14px;margin-top:1rem}
+.arrange-label{font-size:11px;font-weight:700;color:#888;margin-bottom:10px;letter-spacing:0.04em}
+.arrange-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;font-size:13px;color:#1a1a1a;line-height:1.6}
+.arrange-item:last-child{margin-bottom:0}
+.arrange-bullet{color:#1D9E75;font-size:14px;flex-shrink:0}
+.tip-box{border-radius:12px;padding:14px;margin-top:1rem;margin-bottom:1.5rem}
+.tip-box-s{background:#FEF3E2}
+.tip-box-d{background:#E8F5EE}
+.tip-label{font-size:11px;font-weight:700;margin-bottom:5px;letter-spacing:0.04em}
+.tip-label-s{color:#8B6200}
+.tip-label-d{color:#1B6B3A}
+.tip-text{font-size:13px;line-height:1.7}
+.tip-text-s{color:#7A5500}
+.tip-text-d{color:#1A5E34}
+.fav-btn-lg{width:100%;padding:13px;border-radius:12px;border:2px solid #D4537E;background:transparent;color:#D4537E;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s}
+.fav-btn-lg:hover{background:#FBEAF0}
+.empty{font-size:14px;color:#aaa;text-align:center;padding:3rem 0}
+
+/* スクロールバー */
+.photo-strip::-webkit-scrollbar{height:4px}
+.photo-strip::-webkit-scrollbar-track{background:#f0ede8;border-radius:2px}
+.photo-strip::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="list" id="listWrap">
+    <div class="hero" id="heroBox">
+      <div class="hero-icon" id="heroIcon"></div>
+      <div class="hero-text">
+        <h2 id="heroTitle"></h2>
+        <p id="heroDesc"></p>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab active-s" onclick="switchTab('sweets',this)">おやつ</button>
+      <button class="tab" onclick="switchTab('dish',this)">一品料理</button>
+      <button class="tab" onclick="switchTab('fav',this)">お気に入り</button>
+    </div>
+    <div id="recipeList"></div>
+  </div>
+
+  <div class="detail" id="detailView">
+    <button class="back" onclick="goBack()">← 一覧に戻る</button>
+    <div class="dhero" id="dHero"></div>
+    <div class="photo-strip" id="dPhotoStrip"></div>
+    <div class="badge" id="dBadge"></div>
+    <div class="dtitle" id="dTitle"></div>
+    <div class="ddesc" id="dDesc"></div>
+    <div class="stats">
+      <div class="stat"><div class="stat-v" id="dTime"></div><div class="stat-l">調理時間</div></div>
+      <div class="stat"><div class="stat-v" id="dKcal"></div><div class="stat-l">カロリー（概算）</div></div>
+    </div>
+    <div class="sec-h">材料</div>
+    <div id="dIng"></div>
+    <div class="sec-h">作り方</div>
+    <div id="dSteps"></div>
+    <div id="dArrange"></div>
+    <div class="tip-box" id="dTipBox">
+      <div class="tip-label" id="dTipLabel">ワンポイントアドバイス</div>
+      <div class="tip-text" id="dTip"></div>
+    </div>
+    <button class="fav-btn-lg" id="dFavBtn" onclick="toggleDFav()">♡ お気に入りに追加</button>
+  </div>
+</div>
+
+<script>
+const heroData={
+  sweets:{icon:'🍫',bg:'#FBEAF0',titleColor:'#72243E',descColor:'#993556',
+    title:'ダイエット中でもおやつは食べていい',
+    desc:'罪悪感ゼロで楽しめるヘルシーおやつを厳選。\n甘いものを我慢しなくていい、新しいダイエットのかたち。'},
+  dish:{icon:'🍽️',bg:'#E1F5EE',titleColor:'#0F6E56',descColor:'#1D9E75',
+    title:'今日何作ろう？',
+    desc:'ダイエット中の「今日どうしよう」を解決するレシピ。\n満足感のある一品で、無理なく続けられます。'},
+  fav:{icon:'♥',bg:'#FBEAF0',titleColor:'#72243E',descColor:'#993556',
+    title:'お気に入りレシピ',
+    desc:'気に入ったレシピをここに保存できます。\nまたいつでも見返してください。'}
+};
+
+/*
+==============================================
+  レシピデータ
+  各レシピの photos に画像URLを追加できます。
+  例: photos: ['https://example.com/photo1.jpg', 'https://example.com/photo2.jpg']
+  photos を空配列 [] のままにするとアイコンが表示されます。
+==============================================
+*/
+const R=[
+  {id:0,cat:'sweets',emoji:'🍫',bg:'#FBEAF0',
+   photos:[], /* ここに画像URLを追加 */
+   title:'酒粕で腸活する生チョコ',
+   desc:'材料はすべて同量！酒粕の腸活効果をチョコで美味しくとれるヘルシースイーツ。',
+   time:'15分',kcal:'約70kcal/個',
+   ing:[{n:'ワイン（赤白どちらでも）',a:'100cc'},{n:'酒粕',a:'100g'},{n:'ココアパウダー',a:'100g'},{n:'砂糖（てんさい糖）',a:'100g'}],
+   steps:['耐熱ボールにワインと酒粕を入れ、ラップをかけ電子レンジ500Wで4分加熱する。','温まった①をフライパンに移し、ココアと砂糖を加えてよく混ぜる。','保存容器に入れ、冷蔵庫で1〜2時間冷やしたら完成。食べるときにスプーンですくい、ココアパウダーをまぶして。'],
+   tip:'ワインの代わりに日本酒を使う場合は日本酒50cc＋水50ccで。ワインの方がコクが出て深みのある味わいになります。'},
+
+  {id:1,cat:'sweets',emoji:'🍌',bg:'#FAEEDA',
+   photos:[],
+   title:'チョコバナナアイス',
+   desc:'生チョコが柔らかくなっても大丈夫！冷凍バナナに巻くだけのお手軽アイス。',
+   time:'10分＋冷凍',kcal:'約80kcal/本',
+   ing:[{n:'バナナ',a:'1本'},{n:'酒粕生チョコ（柔らかめ）',a:'50g'}],
+   steps:['バナナを半分に切る。','ラップの上に柔らかめの生チョコを広げ、バナナをのせる。','生チョコでバナナをくるっと包み、冷凍庫へ。1〜2時間で完成。'],
+   tip:'バナナを丸ごと使わず半分にするのがポイント。ミニサイズにすることで食べ過ぎを防ぎながら満足感を得られます。'},
+
+  {id:2,cat:'sweets',emoji:'🍮',bg:'#EEEDFE',
+   photos:[],
+   title:'豆腐チョコスイーツ',
+   desc:'材料たった3つ！豆腐ベースで高タンパク・低脂質な濃厚チョコスイーツ。',
+   time:'10分＋冷やし3時間',kcal:'約90kcal/食',
+   ing:[{n:'豆腐',a:'150g'},{n:'ココアパウダー',a:'40g'},{n:'砂糖',a:'大さじ2'}],
+   steps:['豆腐をよく混ぜてなめらかにし、砂糖を加えてさらに混ぜる。','ココアを加えてよく混ぜ合わせる。','豆腐の容器に戻して冷蔵庫で3時間冷やし固めて完成。'],
+   tip:'絹ごし豆腐の方がなめらかに仕上がります。チョコが食べたくなったらすぐ作れるシンプルさが続けるコツ。'},
+
+  {id:3,cat:'sweets',emoji:'🍰',bg:'#FBEAF0',
+   photos:[],
+   title:'酒粕ガトーショコラ',
+   desc:'酒粕生チョコに卵を加えて焼くだけ。腸活しながら本格チョコケーキが楽しめる。',
+   time:'50分＋一晩冷やし',kcal:'約130kcal/切',
+   ing:[{n:'酒粕生チョコ（1バッチ分）',a:'1式'},{n:'卵',a:'4個'}],
+   steps:['酒粕生チョコを作り、粗熱をとる。','卵黄を生チョコに混ぜる。卵白は別のボールでメレンゲにする。','メレンゲを2回に分けて加え、型に流し込む。170℃のオーブンで30分焼く。','冷蔵庫で一晩寝かせて完成。'],
+   tip:'二晩寝かせるとよりしっとり美味しくなります。切り分ける前にコアパウダーをふるうと見た目もきれいに仕上がります。'},
+
+  {id:4,cat:'sweets',emoji:'🍿',bg:'#FAEEDA',
+   photos:[],
+   title:'山盛りポップコーン',
+   desc:'油なし・塩ひとつまみで作るフライパン山盛りポップコーン。スナック欲をヘルシーに解消！',
+   time:'10分',kcal:'約55kcal/食',
+   ing:[{n:'ポップコーン種',a:'手のひら2つかみ'},{n:'塩',a:'ひとつまみ'},{n:'コショウ',a:'好みの量'}],
+   steps:['フライパンにポップコーン種と塩を入れ、フタをして強火にかける。','はじける音がしたら弱めの中火にし、フライパンを時々揺らす。','90秒ほど音がしなくなったら火を止め、コショウをふって完成。'],
+   tip:'種の入れすぎに注意！大きく膨らむのでフライパンから溢れることがあります。油は小さじ1〜2程度で十分です。'},
+
+  {id:5,cat:'sweets',emoji:'🍟',bg:'#EAF3DE',
+   photos:[],
+   title:'ヘルシーポテトチップス',
+   desc:'さつまいもをスライスしてオーブンで素焼き。添加物ゼロ、ダイエット中でも安心のチップス。',
+   time:'30分',kcal:'約85kcal/食',
+   ing:[{n:'さつまいも（またはじゃがいも）',a:'1本'},{n:'塩',a:'好みで'}],
+   steps:['さつまいもを薄くスライスし、水にさらしてアクを抜く。','水気を拭き取り、クッキングシートを敷いた天板に並べる。','170℃のオーブンで20分、素焼きして完成。'],
+   tip:'ダイエット的には塩なしで食べるのがベスト。さつまいもはじゃがいもより処理がラクで自然な甘みもあっておすすめです。'},
+
+  {id:6,cat:'sweets',emoji:'🍪',bg:'#FBEAF0',
+   photos:[],
+   title:'最小限の材料クラッカー',
+   desc:'薄力粉・オリーブオイル・塩・水だけ。カリッとした食感が癖になるシンプルクラッカー。',
+   time:'30分',kcal:'約45kcal/枚',
+   ing:[{n:'薄力粉',a:'100g'},{n:'塩',a:'小さじ1/2'},{n:'オリーブオイル',a:'大さじ2'},{n:'水',a:'大さじ2（目安）'}],
+   steps:['薄力粉と塩をボールに混ぜ、オリーブオイルを加えてすり合わせる。','まとまるまで水を少しずつ加え、麺棒で2mm厚さに伸ばす。','好きなサイズに切り分け、170℃のオーブンで20分焼いて完成。'],
+   tip:'水は少しずつ加えてまとまったら止めるのがコツ。余った生地はラップで包んで冷蔵保存できます。'},
+
+  {id:7,cat:'sweets',emoji:'🍧',bg:'#E6F1FB',
+   photos:[],
+   title:'まるごとバナナアイス',
+   desc:'皮を剥いてラップで巻いて冷凍するだけ。添加物ゼロの自然なアイス。',
+   time:'5分＋冷凍3時間',kcal:'約85kcal/本',
+   ing:[{n:'バナナ',a:'1本'}],
+   steps:['バナナの皮を剥く。','大きめに切ったラップでバナナをくるっと巻く。','冷凍庫で3時間以上凍らせて完成。'],
+   tip:'皮ごと冷凍すると食べるときに剥けなくなるので必ず皮を剥いてから。バナナが安い時にまとめて作り置きするのがおすすめ。'},
+
+  {id:8,cat:'sweets',emoji:'🍨',bg:'#E1F5EE',
+   photos:[],
+   title:'ヨーグルト腸活アイス',
+   desc:'チャック付き袋に入れて揉むだけ！ヨーグルト×バナナで腸活できる手軽なアイス。',
+   time:'10分＋冷凍4時間',kcal:'約100kcal/食',
+   ing:[{n:'プレーンヨーグルト',a:'400g'},{n:'バナナ',a:'2本'},{n:'はちみつ',a:'20g'}],
+   steps:['チャック付き袋にはちみつを先に入れる。','バナナとヨーグルトを加え、袋の上からバナナをつぶして全体を混ぜる。','冷凍庫で4時間以上冷やし固め、固まったら割って食べる。'],
+   tip:'手を汚さず袋の上から混ぜられるのがポイント。プロバイオティクスが生きているので早めに食べるのがおすすめです。'},
+
+  {id:9,cat:'sweets',emoji:'🍷',bg:'#EEEDFE',
+   photos:[],
+   title:'ブルーベリー寒天ゼリー',
+   desc:'ゼラチンより食物繊維が多い寒天を使用。低カロリーで腸活効果も期待できるゼリー。',
+   time:'15分＋冷やし3時間',kcal:'約25kcal/個',
+   ing:[{n:'水',a:'800cc'},{n:'寒天',a:'5g'},{n:'砂糖',a:'大さじ3'},{n:'冷凍ブルーベリー',a:'4〜5粒×10容器分'},{n:'レモン汁',a:'小さじ1（容器ごと）'}],
+   steps:['寒天は一晩水に浸けておく（商品の袋の指示を確認）。','鍋に水・砂糖・寒天を入れて火にかけ、完全に溶かす。','容器にブルーベリーとレモン汁を入れ、寒天液を注いで冷蔵庫で3時間冷やして完成。'],
+   tip:'寒天5gに対して水800ccの割合がゼリーらしいプルっと感に仕上がります。ゼラチンより手間はかかりますが食物繊維が豊富でダイエット効果大。'},
+
+  {id:10,cat:'sweets',emoji:'🎂',bg:'#FBEAF0',
+   photos:[],
+   title:'酒粕レアチーズケーキ',
+   desc:'酒蔵直伝レシピ！酒粕とクリームチーズはどちらも発酵食品。腸活できる本格ケーキ。',
+   time:'20分＋冷やし4時間',kcal:'約185kcal/切',
+   ing:[{n:'酒粕',a:'50g'},{n:'クリームチーズ',a:'250g'},{n:'生クリーム',a:'100ml'},{n:'粉ゼラチン（または寒天）',a:'5g'},{n:'はちみつ',a:'大さじ4〜5'},{n:'お湯',a:'50ml'}],
+   steps:['ゼラチンをお湯で溶かし、温めた生クリームに加えて混ぜ、火からおろす。','全材料をフードプロセッサーにかけてなめらかにする。','容器に流し入れ、冷蔵庫で4時間冷やし固めて完成。'],
+   tip:'ゼラチンを寒天に変えると食物繊維がさらにアップ。美味しいので食べ過ぎ注意。1カットまでと量を決めて楽しみましょう。'},
+
+  {id:11,cat:'sweets',emoji:'🍡',bg:'#FAEEDA',
+   photos:[],
+   title:'豆腐小豆餡スイーツ',
+   desc:'豆腐と片栗粉をレンチンするだけでモチモチお餅に。和の甘さで心が満足する一品。',
+   time:'15分',kcal:'約110kcal/食',
+   ing:[{n:'豆腐',a:'150g'},{n:'片栗粉',a:'大さじ2'},{n:'砂糖',a:'大さじ1'},{n:'小豆餡',a:'適量'},{n:'きなこ',a:'適量'}],
+   steps:['豆腐を耐熱ボールでなめらかになるまで混ぜ、片栗粉と砂糖を加えてさらに混ぜる。','ラップをして電子レンジ500Wで2分加熱。取り出してよく混ぜ、再度1分50秒加熱。','生地を長方形にのばして餡をのせ、くるっと巻き、きなこをまぶして完成。'],
+   tip:'よく混ぜることがモチモチ食感のコツ。できたてが一番おいしいので作ったらすぐに食べましょう。'},
+
+  {id:12,cat:'sweets',emoji:'🍫',bg:'#FBEAF0',
+   photos:[],
+   title:'板チョコスイーツ',
+   desc:'ハイカカオ板チョコとナッツの組み合わせ。手間ゼロで満足感のあるおやつ。',
+   time:'5分',kcal:'約75kcal/食',
+   ing:[{n:'ハイカカオ板チョコ',a:'25g'},{n:'アーモンドなどのナッツ',a:'10g'},{n:'ドライフルーツ（お好みで）',a:'5g'}],
+   steps:['板チョコを1〜2かけ割る。','ナッツ・ドライフルーツと一緒に器に盛り付けて完成。'],
+   tip:'ハイカカオ（カカオ70%以上）を選ぶと食物繊維・鉄分・ポリフェノールが豊富。ゆっくりよく噛んで食べると満足感が上がります。'},
+
+  {id:13,cat:'dish',emoji:'🍗',bg:'#E1F5EE',
+   photos:[],
+   title:'しっとり鶏ハム',
+   desc:'沸騰したら火を止めて放置するだけ。エコで簡単な低カロリー高タンパクの定番レシピ。アレンジアイデアも必見！',
+   time:'一晩＋3時間放置',kcal:'約115kcal/枚',
+   ing:[{n:'鶏むね肉',a:'1枚'},{n:'塩',a:'大さじ1'},{n:'砂糖',a:'大さじ1'}],
+   steps:['鶏むね肉をチャック付き袋に入れ、塩と砂糖を揉み込んで一晩寝かせる。','翌朝、袋から出して鍋にたっぷりの水を入れ30分塩抜きする。','水を替えて中火にかけ、沸騰直前に火を止める。','フタをしたまま3時間放置して完成。薄切りにしていただく。'],
+   arrange:['玉ねぎスライスの下に鶏ハムを敷いた「鶏ハムのオニオンサラダ」','豆苗の胡麻ダレドレッシングがけの下に鶏ハムを敷いた「鶏ハムの豆苗サラダ」','鶏ハムにミョウガをのせ海苔で巻いてわさび醤油でいただく「手巻き鶏ハム」','両面を焼いてボリューム感のある「鶏ハムステーキ」'],
+   tip:'火を止めてからの放置時間が大切。余熱でじっくり火を通すことでしっとり仕上がります。まとめて作り置きしておくと便利です。'},
+
+  {id:14,cat:'dish',emoji:'🍳',bg:'#FAEEDA',
+   photos:[],
+   title:'ひき肉ボールの長芋蒸し',
+   desc:'フライパンひとつで完結！豆腐入りふんわりひき肉に長芋のとろみが絡む体にやさしい蒸し物。',
+   time:'25分',kcal:'約170kcal/食',
+   ing:[{n:'豚ひき肉',a:'200g'},{n:'豆腐',a:'150g'},{n:'塩・コショウ',a:'各小さじ1/2'},{n:'長芋',a:'100g'},{n:'片栗粉',a:'小さじ1'},{n:'料理酒',a:'大さじ2'},{n:'水',a:'大さじ2'},{n:'醤油',a:'小さじ1/2'}],
+   steps:['ひき肉・豆腐・塩・コショウをフライパンに直接入れ、ビニール手袋でよく混ぜ、平らに広げる。','片栗粉を全体にふり、フードプロセッサーで処理した長芋をのせる。','料理酒・水・醤油を回しかけ、フタをして中火で15分蒸し焼きにして完成。'],
+   tip:'豚ひき肉を鶏ひき肉に変えるとよりヘルシーに。仕上げに三ツ葉やミョウガをのせると彩りとアクセントになります。'},
+
+  {id:15,cat:'dish',emoji:'🫘',bg:'#FAEEDA',
+   photos:[],
+   title:'納豆揚げ',
+   desc:'TV「孤独のグルメ」で知った栃木の郷土料理。外はカリッ、中はとろっで食べやすい一品。',
+   time:'20分',kcal:'約150kcal/食',
+   ing:[{n:'納豆',a:'2パック'},{n:'油揚げ（小）',a:'8枚'},{n:'チーズ',a:'大さじ4'},{n:'醤油',a:'少々'}],
+   steps:['油揚げの端を切り、袋状に開いて油抜きしておく。袋状にしたら裏返す。','納豆に醤油を混ぜ、裏返した油揚げにチーズ・納豆・切り取った端部分を入れ、つまようじで口を閉じる。','フライパンで両面をカリッと焼いて完成。'],
+   tip:'油揚げを裏返しにするのがカリッと仕上げるコツ。油抜きをしっかりするとカロリーも抑えられます。'},
+
+  {id:16,cat:'dish',emoji:'🧀',bg:'#E6F1FB',
+   photos:[],
+   title:'超簡単カッテージチーズ',
+   desc:'牛乳と酢だけで作れる手作りチーズ。高タンパク低脂肪でトーストに塗っても美味しい。',
+   time:'15分',kcal:'約60kcal/食',
+   ing:[{n:'牛乳',a:'500ml'},{n:'酢',a:'大さじ2'},{n:'塩',a:'小さじ1/2'},{n:'コショウ',a:'少々'}],
+   steps:['鍋に牛乳を入れて中火で温め、底が焦げないよう時々混ぜる。','沸騰直前で火を止め、酢を加えて混ぜ、そのまま置いてチーズと水分に分離させる。','キッチンペーパーを敷いたざるで濾し、塩コショウを混ぜて完成。'],
+   tip:'冷蔵で約1週間保存可能。冷凍する場合は薄く伸ばしておくと使いたい分だけ割って使えて便利です。'},
+
+  {id:17,cat:'dish',emoji:'🍞',bg:'#FAEEDA',
+   photos:[],
+   title:'ズボラでも続く食パン',
+   desc:'こねなくてOK！材料5つをまとめて発酵させ、ホームベーカリーで焼くだけの簡単食パン。',
+   time:'3時間30分（発酵含む）',kcal:'約160kcal/枚',
+   ing:[{n:'小麦粉',a:'300g'},{n:'50〜60℃のお湯',a:'200cc'},{n:'イースト菌（酵母）',a:'小さじ1'},{n:'塩',a:'小さじ1'},{n:'砂糖',a:'大さじ1'}],
+   steps:['お湯以外の材料をボールに入れ、イースト菌の部分からお湯をかけ、ひとまとめにする（こねなくてOK）。','ラップをかけて2時間一次発酵。','ガス抜きして2等分し、ホームベーカリーのパンケースに入れ1時間二次発酵。','ラップを外してホームベーカリーの焼きモードで35分焼いて完成。'],
+   tip:'砂糖を酒粕に置き換えるとよりダイエット向きに。冬は温かい場所で発酵させると膨らみやすくなります。'},
+
+  {id:18,cat:'dish',emoji:'🫓',bg:'#EAF3DE',
+   photos:[],
+   title:'包丁なしちぎり食パン',
+   desc:'6等分に丸めて並べて焼くだけ。包丁もナイフも不要で手でちぎって食べる楽しいパン。',
+   time:'3時間30分（発酵含む）',kcal:'約160kcal/個',
+   ing:[{n:'小麦粉',a:'300g'},{n:'50〜60℃のお湯',a:'200cc'},{n:'イースト菌（酵母）',a:'小さじ1'},{n:'塩',a:'小さじ1'},{n:'砂糖',a:'大さじ1'}],
+   steps:['お湯以外の材料をボールに入れ、イースト菌の部分からお湯をかけ、ひとまとめにする（こねなくてOK）。','ラップをかけて2時間一次発酵。','ガス抜きして6等分に丸め、ホームベーカリーのパンケースに1つずつ手で平らに伸ばして並べ入れる。','ラップをして1〜2時間二次発酵させる。','ラップを外してホームベーカリーの焼きモードで35分焼く。','焼き上がったら手でちぎって完成。'],
+   tip:'ちぎり食パンは小さく見えますが食パン1枚分以上の重さがあります。お湯を牛乳に変えたりナッツを入れるとアレンジも楽しめます。'}
+];
+
+let currentTab='sweets',currentR=null,favs=new Set();
+
+function updateHero(tab){
+  const h=heroData[tab]||heroData.sweets;
+  document.getElementById('heroBox').style.background=h.bg;
+  document.getElementById('heroIcon').textContent=h.icon;
+  const title=document.getElementById('heroTitle');
+  title.textContent=h.title;title.style.color=h.titleColor;
+  const desc=document.getElementById('heroDesc');
+  desc.textContent=h.desc;desc.style.color=h.descColor;
+}
+
+function switchTab(tab,el){
+  currentTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active-s','active-d')});
+  if(tab==='dish') el.classList.add('active-d');
+  else el.classList.add('active-s');
+  updateHero(tab);renderList();
+}
+
+function renderList(){
+  const el=document.getElementById('recipeList');
+  const filtered=R.filter(r=>currentTab==='fav'?favs.has(r.id):r.cat===currentTab);
+  if(!filtered.length){el.innerHTML='<p class="empty">まだお気に入りがありません</p>';return;}
+  const labels={sweets:'おやつレシピ',dish:'一品料理',fav:'お気に入り'};
+  el.innerHTML=`<div class="sec-lbl">${labels[currentTab]} ${filtered.length}品</div><div class="card-grid">`+
+    filtered.map(r=>{
+      const thumb=r.photos&&r.photos.length>0
+        ?`<div class="rcard-thumb"><img src="${r.photos[0]}" alt="${r.title}" onerror="this.parentNode.innerHTML='${r.emoji}'"></div>`
+        :`<div class="rcard-thumb" style="background:${r.bg}">${r.emoji}</div>`;
+      return `<div class="rcard" onclick="showDetail(${r.id})">${thumb}
+        <div class="rcard-title">${r.title}</div>
+        <div class="rcard-meta">
+          <span class="rcard-kcal">${r.kcal}</span>
+          <button class="fav-btn-sm ${favs.has(r.id)?'fav-on':'fav-off'}" onclick="event.stopPropagation();toggleFav(${r.id})">${favs.has(r.id)?'♥':'♡'}</button>
+        </div></div>`;
+    }).join('')+'</div>';
+}
+
+function toggleFav(id){favs.has(id)?favs.delete(id):favs.add(id);renderList();}
+
+function showDetail(id){
+  const r=R.find(x=>x.id===id);
+  currentR=r;
+  const isS=r.cat==='sweets';
+  const hero=document.getElementById('dHero');
+  if(r.photos&&r.photos.length>0){
+    hero.innerHTML=`<img src="${r.photos[0]}" alt="${r.title}" onerror="this.parentNode.innerHTML='${r.emoji}';this.parentNode.style.background='${r.bg}'">`;
+    hero.style.background='transparent';
+  } else {
+    hero.textContent=r.emoji;
+    hero.style.background=r.bg;
+  }
+  const strip=document.getElementById('dPhotoStrip');
+  if(r.photos&&r.photos.length>1){
+    strip.innerHTML=r.photos.map((p,i)=>
+      `<img src="${p}" alt="写真${i+1}" class="${i===0?'active':''}" onclick="changeMainPhoto('${p}',this)">`
+    ).join('');
+    strip.style.display='flex';
+  } else {
+    strip.innerHTML='';strip.style.display='none';
+  }
+  document.getElementById('dBadge').textContent=isS?'おやつ':'一品料理';
+  document.getElementById('dBadge').className='badge '+(isS?'badge-s':'badge-d');
+  document.getElementById('dTitle').textContent=r.title;
+  document.getElementById('dDesc').textContent=r.desc;
+  document.getElementById('dTime').textContent=r.time;
+  document.getElementById('dKcal').textContent=r.kcal;
+  const dotClass=isS?'ing-dot ing-dot-s':'ing-dot ing-dot-d';
+  document.getElementById('dIng').innerHTML=r.ing.map(i=>
+    `<div class="ing-row"><div class="${dotClass}"></div><span class="ing-n">${i.n}</span><span class="ing-a">${i.a}</span></div>`
+  ).join('');
+  const snClass=isS?'step-n-s':'step-n-d';
+  document.getElementById('dSteps').innerHTML=r.steps.map((s,i)=>
+    `<div class="step-row"><div class="step-n ${snClass}">${i+1}</div><div class="step-t">${s}</div></div>`).join('');
+  const arrangeEl=document.getElementById('dArrange');
+  if(r.arrange){
+    arrangeEl.innerHTML=`<div class="arrange-box"><div class="arrange-label">アレンジアイデア</div>`+
+      r.arrange.map(a=>`<div class="arrange-item"><span class="arrange-bullet">✦</span><span>${a}</span></div>`).join('')+`</div>`;
+  } else {arrangeEl.innerHTML='';}
+  const tipBox=document.getElementById('dTipBox');
+  const tipLabel=document.getElementById('dTipLabel');
+  const tipText=document.getElementById('dTip');
+  if(isS){tipBox.className='tip-box tip-box-s';tipLabel.className='tip-label tip-label-s';tipText.className='tip-text tip-text-s';}
+  else{tipBox.className='tip-box tip-box-d';tipLabel.className='tip-label tip-label-d';tipText.className='tip-text tip-text-d';}
+  tipText.textContent=r.tip;
+  document.getElementById('dFavBtn').textContent=favs.has(id)?'♥ お気に入り済み':'♡ お気に入りに追加';
+  document.getElementById('listWrap').classList.add('off');
+  document.getElementById('detailView').classList.add('on');
+  window.scrollTo(0,0);
+}
+
+function changeMainPhoto(url,el){
+  const hero=document.getElementById('dHero');
+  hero.innerHTML=`<img src="${url}" alt="メイン写真">`;
+  document.querySelectorAll('.photo-strip img').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleDFav(){
+  const id=currentR.id;
+  favs.has(id)?favs.delete(id):favs.add(id);
+  document.getElementById('dFavBtn').textContent=favs.has(id)?'♥ お気に入り済み':'♡ お気に入りに追加';
+}
+
+function goBack(){
+  document.getElementById('listWrap').classList.remove('off');
+  document.getElementById('detailView').classList.remove('on');
+  window.scrollTo(0,0);
+  renderList();
+}
+
+updateHero('sweets');renderList();
+</script>
+</body>
+</html>
