@@ -77,6 +77,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 .tip-text{font-size:13px;line-height:1.7}
 .tip-text-s{color:#7A5500}
 .tip-text-d{color:#1A5E34}
+.tip-photo{width:100%;border-radius:10px;margin-top:10px;object-fit:cover;max-height:200px;display:block}
 .fav-btn-lg{width:100%;padding:13px;border-radius:12px;border:2px solid #D4537E;background:transparent;color:#D4537E;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s}
 .fav-btn-lg:hover{background:#FBEAF0}
 .empty{font-size:14px;color:#aaa;text-align:center;padding:3rem 0}
@@ -143,15 +144,20 @@ const heroData={
 
   【メイン写真】
   photos:['URL'] にURLを入れる。複数入れると横スクロール可。
-  写真なしの場合は photos:[] のまま。
+  写真なしの場合は photos:[''] のまま。
 
   【作り方ステップ写真】
   各ステップの photo:'URL' にURLを入れる。
-  写真なしのステップは photo:'' のまま（行ごと削除してもOK）。
+  写真なしのステップは photo:'' のまま。
 
   【アレンジ写真（鶏ハムのみ）】
   各アレンジの photo:'URL' にURLを入れる。
   写真なしの場合は photo:'' のまま。
+
+  【ワンポイントアドバイス写真】
+  tip:{ text:'アドバイス本文', photo:'URL' } の形式。
+  写真なしの場合は photo:'' のまま。
+  ワンポイントアドバイス自体が不要な場合は tip:null のまま。
 
   【URLの形式】
   https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/ファイル名
@@ -172,7 +178,7 @@ const R=[
      {text:'温まった①をフライパンに移し、ココアと砂糖を加えてよく混ぜる。',photo:''},
      {text:'保存容器に入れ、冷蔵庫で1〜2時間冷やしたら完成。食べるときにスプーンですくい、ココアパウダーをまぶして。',photo:''},
    ],
-   tip:'ワインの代わりに日本酒を使う場合は日本酒50cc＋水50ccで。ワインの方がコクが出て深みのある味わいになります。'},
+   tip:{text:'ワインの代わりに日本酒を使う場合は日本酒50cc＋水50ccで。ワインの方がコクが出て深みのある味わいになります。',photo:''}},
 
   {id:1,cat:'sweets',emoji:'🍌',bg:'#FAEEDA',
    photos:[''],
@@ -185,7 +191,7 @@ const R=[
      {text:'ラップの上に柔らかめの生チョコを広げ、バナナをのせる。',photo:''},
      {text:'生チョコでバナナをくるっと包み、冷凍庫へ。1〜2時間で完成。',photo:''},
    ],
-   tip:'バナナを丸ごと使わず半分にするのがポイント。ミニサイズにすることで食べ過ぎを防ぎながら満足感を得られます。'},
+   tip:{text:'バナナを丸ごと使わず半分にするのがポイント。ミニサイズにすることで食べ過ぎを防ぎながら満足感を得られます。',photo:''}},
 
   {id:2,cat:'sweets',emoji:'🍮',bg:'#EEEDFE',
    photos:[''],
@@ -198,7 +204,7 @@ const R=[
      {text:'ココアを加えてよく混ぜ合わせる。',photo:''},
      {text:'豆腐の容器に戻して冷蔵庫で3時間冷やし固めて完成。',photo:''},
    ],
-   tip:'絹ごし豆腐の方がなめらかに仕上がります。チョコが食べたくなったらすぐ作れるシンプルさが続けるコツ。'},
+   tip:{text:'絹ごし豆腐の方がなめらかに仕上がります。チョコが食べたくなったらすぐ作れるシンプルさが続けるコツ。',photo:''}},
 
   {id:3,cat:'sweets',emoji:'🍰',bg:'#FBEAF0',
    photos:[''],
@@ -212,7 +218,7 @@ const R=[
      {text:'メレンゲを2回に分けて加え、型に流し込む。170℃のオーブンで30分焼く。',photo:''},
      {text:'冷蔵庫で一晩寝かせて完成。',photo:''},
    ],
-   tip:'二晩寝かせるとよりしっとり美味しくなります。切り分ける前にコアパウダーをふるうと見た目もきれいに仕上がります。'},
+   tip:{text:'二晩寝かせるとよりしっとり美味しくなります。切り分ける前にコアパウダーをふるうと見た目もきれいに仕上がります。',photo:''}},
 
   {id:4,cat:'sweets',emoji:'🍿',bg:'#FAEEDA',
    photos:[''],
@@ -225,7 +231,7 @@ const R=[
      {text:'はじける音がしたら弱めの中火にし、フライパンを時々揺らす。',photo:''},
      {text:'90秒ほど音がしなくなったら火を止め、コショウをふって完成。',photo:''},
    ],
-   tip:'種の入れすぎに注意！大きく膨らむのでフライパンから溢れることがあります。油は小さじ1〜2程度で十分です。'},
+   tip:{text:'種の入れすぎに注意！大きく膨らむのでフライパンから溢れることがあります。油は小さじ1〜2程度で十分です。',photo:''}},
 
   {id:5,cat:'sweets',emoji:'🍟',bg:'#EAF3DE',
    photos:[''],
@@ -238,7 +244,7 @@ const R=[
      {text:'水気を拭き取り、クッキングシートを敷いた天板に並べる。',photo:''},
      {text:'170℃のオーブンで20分、素焼きして完成。',photo:''},
    ],
-   tip:'ダイエット的には塩なしで食べるのがベスト。さつまいもはじゃがいもより処理がラクで自然な甘みもあっておすすめです。'},
+   tip:{text:'ダイエット的には塩なしで食べるのがベスト。さつまいもはじゃがいもより処理がラクで自然な甘みもあっておすすめです。',photo:''}},
 
   {id:6,cat:'sweets',emoji:'🍪',bg:'#FBEAF0',
    photos:[''],
@@ -251,7 +257,7 @@ const R=[
      {text:'まとまるまで水を少しずつ加え、麺棒で2mm厚さに伸ばす。',photo:''},
      {text:'好きなサイズに切り分け、170℃のオーブンで20分焼いて完成。',photo:''},
    ],
-   tip:'水は少しずつ加えてまとまったら止めるのがコツ。余った生地はラップで包んで冷蔵保存できます。'},
+   tip:{text:'水は少しずつ加えてまとまったら止めるのがコツ。余った生地はラップで包んで冷蔵保存できます。',photo:''}},
 
   {id:7,cat:'sweets',emoji:'🍧',bg:'#E6F1FB',
    photos:[''],
@@ -264,7 +270,7 @@ const R=[
      {text:'大きめに切ったラップでバナナをくるっと巻く。',photo:''},
      {text:'冷凍庫で3時間以上凍らせて完成。',photo:''},
    ],
-   tip:'皮ごと冷凍すると食べるときに剥けなくなるので必ず皮を剥いてから。バナナが安い時にまとめて作り置きするのがおすすめ。'},
+   tip:{text:'皮ごと冷凍すると食べるときに剥けなくなるので必ず皮を剥いてから。バナナが安い時にまとめて作り置きするのがおすすめ。',photo:''}},
 
   {id:8,cat:'sweets',emoji:'🍨',bg:'#E1F5EE',
    photos:[''],
@@ -290,7 +296,7 @@ const R=[
      {text:'鍋に水・砂糖・寒天を入れて火にかけ、完全に溶かす。',photo:''},
      {text:'容器にブルーベリーとレモン汁を入れ、寒天液を注いで冷蔵庫で3時間冷やして完成。',photo:''},
    ],
-   tip:'寒天5gに対して水800ccの割合がゼリーらしいプルっと感に仕上がります。ゼラチンより手間はかかりますが食物繊維が豊富でダイエット効果の期待大。'},
+   tip:{text:'寒天5gに対して水800ccの割合がゼリーらしいプルっと感に仕上がります。ゼラチンより手間はかかりますが食物繊維が豊富でダイエット効果の期待大。',photo:''}},
 
   {id:10,cat:'sweets',emoji:'🎂',bg:'#FBEAF0',
    photos:[''],
@@ -303,7 +309,7 @@ const R=[
      {text:'全材料をフードプロセッサーにかけてなめらかにする。',photo:''},
      {text:'容器に流し入れ、冷蔵庫で4時間冷やし固めて完成。',photo:''},
    ],
-   tip:'ゼラチンを寒天に変えると食物繊維がさらにアップ。美味しいので食べ過ぎ注意です。'},
+   tip:{text:'ゼラチンを寒天に変えると食物繊維がさらにアップ。美味しいので食べ過ぎ注意です。',photo:''}},
 
   {id:11,cat:'sweets',emoji:'🍡',bg:'#FAEEDA',
    photos:[''],
@@ -316,7 +322,7 @@ const R=[
      {text:'ラップをして電子レンジ500Wで2分加熱。取り出してよく混ぜ、再度1分50秒加熱。',photo:''},
      {text:'生地を長方形にのばして餡をのせ、くるっと巻き、きなこをまぶして完成。',photo:''},
    ],
-   tip:'よく混ぜることがモチモチ食感のコツ。できたてが一番おいしいので作ったらすぐに食べましょう。'},
+   tip:{text:'よく混ぜることがモチモチ食感のコツ。できたてが一番おいしいので作ったらすぐに食べましょう。',photo:''}},
 
   {id:12,cat:'sweets',emoji:'🍫',bg:'#FBEAF0',
    photos:[''],
@@ -328,7 +334,7 @@ const R=[
      {text:'板チョコを1〜2かけ割る。',photo:''},
      {text:'ナッツ・ドライフルーツと一緒に器に盛り付けて完成。',photo:''},
    ],
-   tip:'ハイカカオ（カカオ70%以上）を選ぶと食物繊維・鉄分・ポリフェノールが豊富。ゆっくりよく噛んで食べると満足感が上がります。'},
+   tip:{text:'ハイカカオ（カカオ70%以上）を選ぶと食物繊維・鉄分・ポリフェノールが豊富。ゆっくりよく噛んで食べると満足感が上がります。',photo:''}},
 
   /* ===================== 一品料理 ===================== */
 
@@ -350,7 +356,7 @@ const R=[
      {name:'鶏ハムにミョウガをのせ海苔で巻いてわさび醤油でいただく「手巻き鶏ハム」',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/a785989635ebabe2b0e6a97b51bf371d14f3872d/%E6%89%8B%E5%B7%BB%E3%81%8D%E9%B6%8F%E3%83%8F%E3%83%A0.webp'},
      {name:'両面を焼いてボリューム感のある「鶏ハムステーキ」',photo:''},
    ],
-   tip:'火を止めてからの放置時間が大切。余熱でじっくり火を通すことでしっとり仕上がります。まとめて作り置きしておくと便利です。'},
+   tip:{text:'火を止めてからの放置時間が大切。余熱でじっくり火を通すことでしっとり仕上がります。まとめて作り置きしておくと便利です。',photo:''}},
 
   {id:14,cat:'dish',emoji:'🍳',bg:'#FAEEDA',
    photos:['https://raw.github.com/Yui-ottodiet/diet-recipe/main/%E3%81%B2%E3%81%8D%E8%82%89%E8%B1%86%E8%85%90%E3%83%9C%E3%83%BC%E3%83%AB.webp'],
@@ -363,7 +369,7 @@ const R=[
      {text:'片栗粉を全体にふり、フードプロセッサーで処理した長芋をのせる。',photo:''},
      {text:'料理酒・水・醤油を回しかけ、フタをして中火で15分蒸し焼きにして完成。',photo:''},
    ],
-   tip:'豚ひき肉を鶏ひき肉に変えるとよりヘルシーに。仕上げに三ツ葉やミョウガをのせると彩りとアクセントになります。'},
+   tip:{text:'豚ひき肉を鶏ひき肉に変えるとよりヘルシーに。仕上げに三ツ葉やミョウガをのせると彩りとアクセントになります。',photo:''}},
 
   {id:15,cat:'dish',emoji:'🫘',bg:'#FAEEDA',
    photos:['https://raw.github.com/Yui-ottodiet/diet-recipe/main/%E7%B4%8D%E8%B1%86%E6%8F%9A%E3%81%92.webp'],
@@ -376,7 +382,7 @@ const R=[
      {text:'納豆に醤油を混ぜ、裏返した油揚げにチーズ・納豆・切り取った端部分を入れ、つまようじで口を閉じる。',photo:''},
      {text:'フライパンで両面をカリッと焼いて完成。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/ef4249e177ac55fe33a4b7331de79617d46fa2a2/%E7%B4%8D%E8%B1%86%E6%8F%9A%E3%81%92%EF%BC%92.webp'},
    ],
-   tip:'油揚げを裏返しにするのがカリッと仕上げるコツ。油抜きをしっかりするとカロリーも抑えられます。'},
+   tip:{text:'油揚げを裏返しにするのがカリッと仕上げるコツ。油抜きをしっかりするとカロリーも抑えられます。',photo:''}},
 
   {id:16,cat:'dish',emoji:'🧀',bg:'#E6F1FB',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/b4780b2204cf90eddfb7f029afdf23a025dbddd1/%E3%82%AB%E3%83%83%E3%83%86%E3%83%BC%E3%82%B8%E3%83%81%E3%83%BC%E3%82%BA.webp'],
@@ -389,7 +395,7 @@ const R=[
      {text:'沸騰直前で火を止め、酢を加えて混ぜ、そのまま少し置いて混ぜると、チーズと水分が分離する。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/b4780b2204cf90eddfb7f029afdf23a025dbddd1/%E3%82%AB%E3%83%83%E3%83%86%E3%83%BC%E3%82%B8%E3%83%81%E3%83%BC%E3%82%BA%EF%BC%92.webp'},
      {text:'キッチンペーパーを敷いたざるで濾し、塩コショウを混ぜて完成。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/b4780b2204cf90eddfb7f029afdf23a025dbddd1/%E3%82%AB%E3%83%83%E3%83%86%E3%83%BC%E3%82%B8%E3%83%81%E3%83%BC%E3%82%BA%EF%BC%93.webp'},
    ],
-   tip:'冷蔵で約1週間保存可能。冷凍する場合はジップロックなどの袋に薄く伸ばしておくと使いたい分だけ割って使えて便利です。'},
+   tip:{text:'冷蔵で約1週間保存可能。冷凍する場合はジップロックなどの袋に薄く伸ばしておくと使いたい分だけ割って使えて便利です。',photo:''}},
 
   {id:17,cat:'dish',emoji:'🍞',bg:'#FAEEDA',
    photos:[''],
@@ -403,7 +409,7 @@ const R=[
      {text:'ガス抜きして2等分し、ホームベーカリーのパンケースに入れ1時間二次発酵。',photo:''},
      {text:'ラップを外してホームベーカリーの焼きモードで35分焼いて完成。',photo:''},
    ],
-   tip:'砂糖を酒粕に置き換えるとよりダイエット向きに。冬は温かい場所で発酵させると膨らみやすくなります。'},
+   tip:{text:'砂糖を酒粕に置き換えるとよりダイエット向きに。冬は温かい場所で発酵させると膨らみやすくなります。',photo:''}},
 
   {id:18,cat:'dish',emoji:'🫓',bg:'#EAF3DE',
    photos:[''],
@@ -419,7 +425,7 @@ const R=[
      {text:'ラップを外してホームベーカリーの焼きモードで35分焼く。',photo:''},
      {text:'焼き上がったら手でちぎって完成。',photo:''},
    ],
-   tip:'ちぎり食パンは小さく見えますが食パン1枚分以上の重さがあります。お湯を牛乳に変えたりナッツを入れるとアレンジも楽しめます。'}
+   tip:{text:'ちぎり食パンは小さく見えますが食パン1枚分以上の重さがあります。お湯を牛乳に変えたりナッツを入れるとアレンジも楽しめます。',photo:''}}
 ];
 
 let currentTab='sweets',currentR=null,favs=new Set();
@@ -515,7 +521,10 @@ function showDetail(id){
     const boxClass=isS?'tip-box tip-box-s':'tip-box tip-box-d';
     const lblClass=isS?'tip-label tip-label-s':'tip-label tip-label-d';
     const txtClass=isS?'tip-text tip-text-s':'tip-text tip-text-d';
-    tipWrap.innerHTML=`<div class="${boxClass}"><div class="${lblClass}">ワンポイントアドバイス</div><div class="${txtClass}">${r.tip}</div></div>`;
+    const tipPhotoHtml=r.tip.photo
+      ?`<img src="${r.tip.photo}" alt="ワンポイント" class="tip-photo" onerror="this.style.display='none'">`
+      :'';
+    tipWrap.innerHTML=`<div class="${boxClass}"><div class="${lblClass}">ワンポイントアドバイス</div><div class="${txtClass}">${r.tip.text}</div>${tipPhotoHtml}</div>`;
   } else {tipWrap.innerHTML='';}
   document.getElementById('dFavBtn').textContent=favs.has(id)?'♥ お気に入り済み':'♡ お気に入りに追加';
   document.getElementById('listWrap').classList.add('off');
