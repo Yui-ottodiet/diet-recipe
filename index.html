@@ -14,9 +14,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 .hero-text p{font-size:12px;line-height:1.6}
 .tabs{display:flex;margin-bottom:1.25rem;border:1px solid #e0ddd8;border-radius:10px;overflow:hidden;background:#fff}
 .tab{flex:1;padding:10px 0;font-size:13px;font-weight:600;text-align:center;cursor:pointer;background:transparent;color:#888;border:none;transition:all 0.15s}
-.tab.active-s{background:#FBEAF0;color:#72243E}
+.tab.active-s{background:#FEF8E1;color:#8B6A00}
 .tab.active-d{background:#E1F5EE;color:#0F6E56}
-.tab.active-f{background:#FEF8E1;color:#8B6A00}
+.tab.active-f{background:#FBEAF0;color:#72243E}
 .tab:not(:last-child){border-right:1px solid #e0ddd8}
 .sec-lbl{font-size:12px;font-weight:600;color:#aaa;letter-spacing:0.06em;margin-bottom:12px}
 .card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1.5rem}
@@ -39,7 +39,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 .photo-strip img{width:100px;height:80px;object-fit:cover;border-radius:10px;flex-shrink:0;cursor:pointer;border:2px solid transparent;transition:border-color 0.15s}
 .photo-strip img.active{border-color:#D4537E}
 .badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;margin-bottom:8px;font-weight:600}
-.badge-s{background:#FBEAF0;color:#72243E}
+.badge-s{background:#FEF8E1;color:#8B6A00}
 .badge-d{background:#E1F5EE;color:#0F6E56}
 .dtitle{font-size:20px;font-weight:700;color:#1a1a1a;margin-bottom:6px;line-height:1.3}
 .ddesc{font-size:13px;color:#666;line-height:1.7;margin-bottom:1rem}
@@ -141,10 +141,10 @@ const heroData={
   dish:{icon:'🍽️',bg:'#E1F5EE',titleColor:'#0F6E56',descColor:'#1D9E75',
     title:'今日何作ろう？',
     desc:'ダイエット中の「今日どうしよう」を解決するレシピ。\n満足感のある一品で、無理なく続けられます。'},
-  sweets:{icon:'🍫',bg:'#FBEAF0',titleColor:'#72243E',descColor:'#993556',
+  sweets:{icon:'🍫',bg:'#FEF8E1',titleColor:'#8B6A00',descColor:'#8B6A00',
     title:'ダイエット中だけどおやつが食べたくなったら',
     desc:'罪悪感ゼロで楽しめるヘルシーおやつを厳選。\n甘いものを我慢しなくていい、新しいダイエットのかたち。'},
-  fav:{icon:'♥',bg:'#FEF8E1',titleColor:'#8B6A00',descColor:'#8B6A00',
+  fav:{icon:'♥',bg:'#FBEAF0',titleColor:'#72243E',descColor:'#993556',
     title:'お気に入りレシピ',
     desc:'気に入ったレシピをここに保存できます。\nまたいつでも見返してください。'}
 };
@@ -464,7 +464,7 @@ function updateHero(tab){
 
 function switchTab(tab,el){
   currentTab=tab;
-  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active-s','active-d')});
+  document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active-s','active-d','active-f')});
   if(tab==='dish') el.classList.add('active-d');
   else if(tab==='fav') el.classList.add('active-f');
   else el.classList.add('active-s');
