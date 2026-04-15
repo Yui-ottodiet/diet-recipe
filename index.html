@@ -16,6 +16,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 .tab{flex:1;padding:10px 0;font-size:13px;font-weight:600;text-align:center;cursor:pointer;background:transparent;color:#888;border:none;transition:all 0.15s}
 .tab.active-s{background:#FBEAF0;color:#72243E}
 .tab.active-d{background:#E1F5EE;color:#0F6E56}
+.tab.active-f{background:#FEF8E1;color:#8B6A00}
 .tab:not(:last-child){border-right:1px solid #e0ddd8}
 .sec-lbl{font-size:12px;font-weight:600;color:#aaa;letter-spacing:0.06em;margin-bottom:12px}
 .card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:1.5rem}
@@ -107,8 +108,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
     </div>
     <div class="tabs">
       <button class="tab active-d" onclick="switchTab('dish',this)">一品料理</button>
-<button class="tab" onclick="switchTab('sweets',this)">おやつ</button>
-<button class="tab" onclick="switchTab('fav',this)">お気に入り</button>
+      <button class="tab" onclick="switchTab('sweets',this)">おやつ</button>
+      <button class="tab" onclick="switchTab('fav',this)">お気に入り</button>
     </div>
     <div id="recipeList"></div>
   </div>
@@ -143,7 +144,7 @@ const heroData={
   sweets:{icon:'🍫',bg:'#FBEAF0',titleColor:'#72243E',descColor:'#993556',
     title:'ダイエット中だけどおやつが食べたくなったら',
     desc:'罪悪感ゼロで楽しめるヘルシーおやつを厳選。\n甘いものを我慢しなくていい、新しいダイエットのかたち。'},
-  fav:{icon:'♥',bg:'#FBEAF0',titleColor:'#72243E',descColor:'#993556',
+  fav:{icon:'♥',bg:'#FEF8E1',titleColor:'#8B6A00',descColor:'#8B6A00',
     title:'お気に入りレシピ',
     desc:'気に入ったレシピをここに保存できます。\nまたいつでも見返してください。'}
 };
@@ -465,6 +466,7 @@ function switchTab(tab,el){
   currentTab=tab;
   document.querySelectorAll('.tab').forEach(t=>{t.classList.remove('active-s','active-d')});
   if(tab==='dish') el.classList.add('active-d');
+  else if(tab==='fav') el.classList.add('active-f');
   else el.classList.add('active-s');
   updateHero(tab);renderList();
 }
