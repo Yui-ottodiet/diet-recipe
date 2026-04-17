@@ -48,6 +48,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 .stat-v{font-size:15px;font-weight:700;color:#1a1a1a}
 .stat-l{font-size:11px;color:#aaa;margin-top:3px}
 .sec-h{font-size:13px;font-weight:700;color:#555;margin:1.25rem 0 8px;padding-bottom:6px;border-bottom:1px solid #ede9e3}
+/* 使用する器具 */
+.tools-box{background:#f8f6f3;border-radius:12px;padding:14px;margin-bottom:0.5rem}
+.tools-label{font-size:11px;font-weight:700;color:#888;margin-bottom:10px;letter-spacing:0.04em}
+.tools-photo{width:100%;border-radius:10px;margin-bottom:10px;object-fit:cover;max-height:180px;display:block}
+.tools-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#1a1a1a;line-height:1.6;margin-bottom:4px}
+.tools-bullet{color:#888;flex-shrink:0}
+/* 材料写真 */
+.ing-photo{width:100%;border-radius:10px;margin-bottom:10px;object-fit:cover;max-height:180px;display:block}
 .ing-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0ede8;font-size:13px}
 .ing-row:last-child{border-bottom:none}
 .ing-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
@@ -62,6 +70,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 .step-n-d{background:#E1F5EE;color:#0F6E56}
 .step-t{font-size:13px;color:#1a1a1a;line-height:1.7}
 .step-photo{width:100%;border-radius:10px;margin-top:6px;object-fit:cover;max-height:220px;display:block}
+/* アレンジ・補足 共通ボックス */
 .arrange-box{background:#f8f6f3;border-radius:12px;padding:14px;margin-top:1rem}
 .arrange-label{font-size:11px;font-weight:700;color:#888;margin-bottom:12px;letter-spacing:0.04em}
 .arrange-item{margin-bottom:14px}
@@ -69,6 +78,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 .arrange-photo{width:100%;border-radius:10px;margin-bottom:6px;object-fit:cover;max-height:180px;display:block}
 .arrange-name{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#1a1a1a;line-height:1.6}
 .arrange-bullet{color:#1D9E75;font-size:14px;flex-shrink:0}
+/* 補足ボックス */
+.sup-box{background:#f8f6f3;border-radius:12px;padding:14px;margin-top:1rem;margin-bottom:0.5rem}
+.sup-label{font-size:11px;font-weight:700;color:#888;margin-bottom:8px;letter-spacing:0.04em}
+.sup-text{font-size:13px;color:#1a1a1a;line-height:1.7}
+.sup-photo{width:100%;border-radius:10px;margin-top:10px;object-fit:cover;max-height:200px;display:block}
 .tip-box{border-radius:12px;padding:14px;margin-top:1rem}
 .tip-box-s{background:#FEF3E2}
 .tip-box-d{background:#E8F5EE}
@@ -79,15 +93,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 .tip-text-s{color:#7A5500}
 .tip-text-d{color:#1A5E34}
 .tip-photo{width:100%;border-radius:10px;margin-top:10px;object-fit:cover;max-height:200px;display:block}
-
-/* 補足ボックス（左アクセントラインスタイル） */
-.sup-box{border-left:3px solid #B0B0B0;background:#fff;border-radius:0 10px 10px 0;padding:12px 14px;margin-top:1rem;margin-bottom:1.5rem}
-.sup-box-s{border-left-color:#D4537E}
-.sup-box-d{border-left-color:#1D9E75}
-.sup-label{font-size:11px;font-weight:700;margin-bottom:5px;letter-spacing:0.04em;color:#999}
-.sup-text{font-size:13px;line-height:1.7;color:#444}
-.sup-photo{width:100%;border-radius:10px;margin-top:10px;object-fit:cover;max-height:200px;display:block}
-
 .fav-btn-lg{width:100%;padding:13px;border-radius:12px;border:2px solid #D4537E;background:transparent;color:#D4537E;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s;margin-top:1rem}
 .fav-btn-lg:hover{background:#FBEAF0}
 .empty{font-size:14px;color:#aaa;text-align:center;padding:3rem 0}
@@ -125,7 +130,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
       <div class="stat"><div class="stat-v" id="dTime"></div><div class="stat-l">調理時間</div></div>
       <div class="stat"><div class="stat-v" id="dKcal"></div><div class="stat-l">カロリー（概算）</div></div>
     </div>
+    <div id="dToolsWrap"></div>
     <div class="sec-h">材料</div>
+    <div id="dIngPhoto"></div>
     <div id="dIng"></div>
     <div class="sec-h">作り方</div>
     <div id="dSteps"></div>
@@ -151,29 +158,29 @@ const heroData={
 
 /*
 ================================================================
-  画像の入れ方
+  画像・データの入れ方
 
   【メイン写真】
-  photos:['URL'] にURLを入れる。複数入れると横スクロール可。
-  写真なしの場合は photos:[''] のまま。
+  photos:['URL'] 複数可。写真なしは photos:['']
+
+  【使用する器具】
+  tools:{ items:['器具名1','器具名2'], photo:'URL' }
+  写真なしは photo:'' 、器具欄不要は tools:null
+
+  【材料写真】
+  ingPhoto:'URL' 写真なしは ingPhoto:''
 
   【作り方ステップ写真】
-  各ステップの photo:'URL' にURLを入れる。
-  写真なしのステップは photo:'' のまま。
+  各ステップの photo:'URL' 写真なしは photo:''
 
   【アレンジ写真（鶏ハムのみ）】
-  各アレンジの photo:'URL' にURLを入れる。
-  写真なしの場合は photo:'' のまま。
+  各アレンジの photo:'URL' 写真なしは photo:''
 
   【ワンポイントアドバイス写真】
-  tip:{ text:'アドバイス本文', photo:'URL' } の形式。
-  写真なしの場合は photo:'' のまま。
-  ワンポイントアドバイス自体が不要な場合は tip:null のまま。
+  tip:{ text:'本文', photo:'URL' } 不要は tip:null
 
   【補足】
-  sup:{ text:'補足本文', photo:'URL' } の形式。
-  写真なしの場合は photo:'' のまま。
-  補足が不要な場合は sup:null のまま。
+  sup:{ text:'本文', photo:'URL' } 不要は sup:null
 
   【URLの形式】
   https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/ファイル名
@@ -183,39 +190,12 @@ const R=[
 
   /* ===================== おやつ（指定順） ===================== */
 
-  {id:4,cat:'sweets',emoji:'🍿',bg:'#FAEEDA',
-   photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E5%B1%B1%E7%9B%9B%E3%82%8A%E3%83%9D%E3%83%83%E3%83%97%E3%82%B3%E3%83%BC%E3%83%B3.webp'],
-   title:'山盛りポップコーン',
-   desc:'油なし・塩ひとつまみで作るフライパン山盛りポップコーン。スナック欲をヘルシーに解消！',
-   time:'10分',kcal:'約55kcal/食',
-   ing:[{n:'ポップコーン種',a:'手のひら2つかみ'},{n:'塩',a:'ひとつまみ'},{n:'コショウ',a:'好みの量'}],
-   steps:[
-     {text:'フライパンにポップコーン種と塩を入れ、フタをして強火にかける。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E5%B1%B1%E7%9B%9B%E3%82%8A%E3%83%9D%E3%83%83%E3%83%97%E3%82%B3%E3%83%BC%E3%83%B3%EF%BC%92.webp'},
-     {text:'はじける音がしたら弱めの中火にし、フライパンを時々揺らす。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E5%B1%B1%E7%9B%9B%E3%82%8A%E3%83%9D%E3%83%83%E3%83%97%E3%82%B3%E3%83%BC%E3%83%B3%EF%BC%93.webp'},
-     {text:'90秒ほど音がしなくなったら火を止め、コショウをふって完成。',photo:''},
-   ],
-   tip:{text:'種の入れすぎに注意！大きく膨らむのでフライパンから溢れることがあります。油は小さじ1〜2程度で十分です。',photo:''},
-   sup:null},
-
-  {id:5,cat:'sweets',emoji:'🍟',bg:'#EAF3DE',
-   photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%81%95%E3%81%A4%E3%81%BE%E3%81%84%E3%82%82%E3%83%81%E3%83%83%E3%83%97%E3%82%B9.webp'],
-   title:'ヘルシーポテトチップス',
-   desc:'さつまいもをスライスしてオーブンで素焼き。添加物ゼロ、ダイエット中でも安心のチップス。',
-   time:'30分',kcal:'約85kcal/食',
-   ing:[{n:'さつまいも（またはじゃがいも）',a:'1本'},{n:'塩',a:'好みで'}],
-   steps:[
-     {text:'さつまいもを薄くスライスする。',photo:''},
-     {text:'水気を拭き取り、クッキングシートを敷いた天板に並べる。',photo:''},
-     {text:'170℃のオーブンで20分、素焼きして完成。',photo:''},
-   ],
-   tip:{text:'ダイエット的には塩なしで食べるのがベスト。さつまいもはじゃがいもより処理がラクで自然な甘みもあっておすすめです。',photo:''},
-   sup:null},
-
   {id:6,cat:'sweets',emoji:'🍪',bg:'#FBEAF0',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%82%AF%E3%83%A9%E3%83%83%E3%82%AB%E3%83%BC.webp'],
    title:'最小限の材料で作るクラッカー',
    desc:'薄力粉・オリーブオイル・塩・水だけ。カリッとした食感が癖になるシンプルクラッカー。',
    time:'30分',kcal:'約45kcal/枚',
+   tools:null,ingPhoto:'',
    ing:[{n:'薄力粉',a:'100g'},{n:'塩',a:'小さじ1/2'},{n:'オリーブオイル',a:'大さじ2'},{n:'水',a:'大さじ2（目安）'}],
    steps:[
      {text:'薄力粉と塩をボールに混ぜ、オリーブオイルを加えてすり合わせる。',photo:''},
@@ -225,11 +205,42 @@ const R=[
    tip:{text:'水は少しずつ加えてまとまったら止めるのがコツ。余った生地はラップで包んで冷蔵保存できます。',photo:''},
    sup:null},
 
+  {id:5,cat:'sweets',emoji:'🍟',bg:'#EAF3DE',
+   photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%81%95%E3%81%A4%E3%81%BE%E3%81%84%E3%82%82%E3%83%81%E3%83%83%E3%83%97%E3%82%B9.webp'],
+   title:'ヘルシーポテトチップス',
+   desc:'さつまいもをスライスしてオーブンで素焼き。添加物ゼロ、ダイエット中でも安心のチップス。',
+   time:'30分',kcal:'約85kcal/食',
+   tools:null,ingPhoto:'',
+   ing:[{n:'さつまいも（またはじゃがいも）',a:'1本'},{n:'塩',a:'好みで'}],
+   steps:[
+     {text:'さつまいもを薄くスライスする。',photo:''},
+     {text:'水気を拭き取り、クッキングシートを敷いた天板に並べる。',photo:''},
+     {text:'170℃のオーブンで20分、素焼きして完成。',photo:''},
+   ],
+   tip:{text:'ダイエット的には塩なしで食べるのがベスト。さつまいもはじゃがいもより処理がラクで自然な甘みもあっておすすめです。',photo:''},
+   sup:null},
+
+  {id:4,cat:'sweets',emoji:'🍿',bg:'#FAEEDA',
+   photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E5%B1%B1%E7%9B%9B%E3%82%8A%E3%83%9D%E3%83%83%E3%83%97%E3%82%B3%E3%83%BC%E3%83%B3.webp'],
+   title:'山盛りポップコーン',
+   desc:'油なし・塩ひとつまみで作るフライパン山盛りポップコーン。スナック欲をヘルシーに解消！',
+   time:'10分',kcal:'約55kcal/食',
+   tools:null,ingPhoto:'',
+   ing:[{n:'ポップコーン種',a:'手のひら2つかみ'},{n:'塩',a:'ひとつまみ'},{n:'コショウ',a:'好みの量'}],
+   steps:[
+     {text:'フライパンにポップコーン種と塩を入れ、フタをして強火にかける。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E5%B1%B1%E7%9B%9B%E3%82%8A%E3%83%9D%E3%83%83%E3%83%97%E3%82%B3%E3%83%BC%E3%83%B3%EF%BC%92.webp'},
+     {text:'はじける音がしたら弱めの中火にし、フライパンを時々揺らす。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E5%B1%B1%E7%9B%9B%E3%82%8A%E3%83%9D%E3%83%83%E3%83%97%E3%82%B3%E3%83%BC%E3%83%B3%EF%BC%93.webp'},
+     {text:'90秒ほど音がしなくなったら火を止め、コショウをふって完成。',photo:''},
+   ],
+   tip:{text:'種の入れすぎに注意！大きく膨らむのでフライパンから溢れることがあります。油は小さじ1〜2程度で十分です。',photo:''},
+   sup:null},
+
   {id:10,cat:'sweets',emoji:'🎂',bg:'#FBEAF0',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E9%85%92%E7%B2%95%E3%83%AC%E3%82%A2%E3%83%81%E3%83%BC%E3%82%BA%E3%82%B1%E3%83%BC%E3%82%AD.webp'],
    title:'酒粕レアチーズケーキ',
    desc:'酒蔵直伝レシピ！酒粕とクリームチーズはどちらも発酵食品。腸活できる本格ケーキ。',
    time:'20分＋冷やし4時間',kcal:'約185kcal/切',
+   tools:null,ingPhoto:'',
    ing:[{n:'酒粕',a:'50g'},{n:'クリームチーズ',a:'250g'},{n:'生クリーム',a:'100ml'},{n:'粉ゼラチン（または寒天）',a:'5g'},{n:'はちみつ',a:'大さじ4〜5'},{n:'お湯',a:'50ml'}],
    steps:[
      {text:'ゼラチンをお湯で溶かし、温めた生クリームに加えて混ぜ、火からおろす。',photo:''},
@@ -241,9 +252,10 @@ const R=[
 
   {id:11,cat:'sweets',emoji:'🍡',bg:'#FAEEDA',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%A2%E3%83%81%E3%83%A2%E3%83%81%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%84.webp'],
-   title:'豆腐小豆餡スイーツ',
+   title:'豆腐のあずき餡スイーツ',
    desc:'豆腐と片栗粉をレンチンするだけでモチモチお餅に。和の甘さで心が満足する一品。',
    time:'15分',kcal:'約110kcal/食',
+   tools:null,ingPhoto:'',
    ing:[{n:'豆腐',a:'150g'},{n:'片栗粉',a:'大さじ2'},{n:'砂糖',a:'大さじ1'},{n:'小豆餡',a:'適量'},{n:'きなこ',a:'適量'}],
    steps:[
      {text:'豆腐を耐熱ボールでなめらかになるまで混ぜ、片栗粉と砂糖を加えてさらに混ぜる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%A2%E3%83%81%E3%83%A2%E3%83%81%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%842.webp'},
@@ -253,11 +265,27 @@ const R=[
    tip:{text:'よく混ぜることがモチモチ食感のコツ。できたてが一番おいしいので作ったらすぐに食べましょう。',photo:''},
    sup:null},
 
+  {id:2,cat:'sweets',emoji:'🍮',bg:'#EEEDFE',
+   photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%81%E3%83%A7%E3%82%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%84.webp'],
+   title:'豆腐チョコスイーツ',
+   desc:'材料たった3つ！豆腐ベースで高タンパク・低脂質な濃厚チョコスイーツ。',
+   time:'10分＋冷やし3時間',kcal:'約90kcal/食',
+   tools:null,ingPhoto:'',
+   ing:[{n:'豆腐',a:'150g'},{n:'ココアパウダー',a:'40g'},{n:'砂糖',a:'大さじ2'}],
+   steps:[
+     {text:'豆腐をよく混ぜてなめらかにし、砂糖を加えてさらに混ぜる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%81%E3%83%A7%E3%82%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%84%EF%BC%91.webp'},
+     {text:'ココアを加えてよく混ぜ合わせる。',photo:''},
+     {text:'豆腐の容器に戻して冷蔵庫で3時間冷やし固めて完成。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%81%E3%83%A7%E3%82%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%84%EF%BC%92.webp'},
+   ],
+   tip:{text:'絹ごし豆腐の方がなめらかに仕上がります。チョコが食べたくなったらすぐ作れるシンプルさが続けるコツ。',photo:''},
+   sup:null},
+
   {id:0,cat:'sweets',emoji:'🍫',bg:'#FBEAF0',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E7%94%9F%E3%83%81%E3%83%A7%E3%82%B3.webp'],
-   title:'酒粕で腸活する生チョコ',
+   title:'酒粕生チョコ',
    desc:'材料はすべて同量！酒粕の腸活効果をチョコで美味しくとれるヘルシースイーツ。',
    time:'15分',kcal:'約70kcal/個',
+   tools:null,ingPhoto:'',
    ing:[{n:'ワイン（赤白どちらでも）',a:'100cc'},{n:'酒粕',a:'100g'},{n:'ココアパウダー',a:'100g'},{n:'砂糖（てんさい糖）',a:'100g'}],
    steps:[
      {text:'耐熱ボールにワインと酒粕を入れ、ラップをかけ電子レンジ500Wで4分加熱する。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E7%94%9F%E3%83%81%E3%83%A7%E3%82%B3%EF%BC%91.webp'},
@@ -272,6 +300,7 @@ const R=[
    title:'チョコバナナアイス',
    desc:'生チョコが柔らかくなっても大丈夫！冷凍バナナに巻くだけのお手軽アイス。',
    time:'10分＋冷凍',kcal:'約80kcal/本',
+   tools:null,ingPhoto:'',
    ing:[{n:'バナナ',a:'1本'},{n:'酒粕生チョコ（柔らかめ）',a:'50g'}],
    steps:[
      {text:'バナナを半分に切る。',photo:''},
@@ -281,25 +310,12 @@ const R=[
    tip:{text:'バナナを丸ごと使わず半分にするのがポイント。ミニサイズにすることで食べ過ぎを防ぎながら満足感を得られます。',photo:''},
    sup:null},
 
-  {id:2,cat:'sweets',emoji:'🍮',bg:'#EEEDFE',
-   photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%81%E3%83%A7%E3%82%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%84.webp'],
-   title:'豆腐チョコスイーツ',
-   desc:'材料たった3つ！豆腐ベースで高タンパク・低脂質な濃厚チョコスイーツ。',
-   time:'10分＋冷やし3時間',kcal:'約90kcal/食',
-   ing:[{n:'豆腐',a:'150g'},{n:'ココアパウダー',a:'40g'},{n:'砂糖',a:'大さじ2'}],
-   steps:[
-     {text:'豆腐をよく混ぜてなめらかにし、砂糖を加えてさらに混ぜる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%81%E3%83%A7%E3%82%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%84%EF%BC%91.webp'},
-     {text:'ココアを加えてよく混ぜ合わせる。',photo:''},
-     {text:'豆腐の容器に戻して冷蔵庫で3時間冷やし固めて完成。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%81%E3%83%A7%E3%82%B3%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%84%EF%BC%92.webp'},
-   ],
-   tip:{text:'絹ごし豆腐の方がなめらかに仕上がります。チョコが食べたくなったらすぐ作れるシンプルさが続けるコツ。',photo:''},
-   sup:null},
-
   {id:3,cat:'sweets',emoji:'🍰',bg:'#FBEAF0',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E9%85%92%E7%B2%95%E3%82%AC%E3%83%88%E3%83%BC%E3%82%B7%E3%83%A7%E3%82%B3%E3%83%A9.webp'],
    title:'酒粕ガトーショコラ',
    desc:'酒粕生チョコに卵を加えて焼くだけ。腸活しながら本格チョコケーキが楽しめる。',
    time:'50分＋一晩冷やし',kcal:'約130kcal/切',
+   tools:null,ingPhoto:'',
    ing:[{n:'酒粕生チョコ 1回分（ワイン・酒粕・ココア・砂糖 各100g）',a:''},{n:'卵',a:'4個'}],
    steps:[
      {text:'酒粕生チョコを作り、粗熱をとる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E9%85%92%E7%B2%95%E3%82%AC%E3%83%88%E3%83%BC%E3%82%B7%E3%83%A7%E3%82%B3%E3%83%A9%EF%BC%91.webp'},
@@ -310,11 +326,26 @@ const R=[
    tip:{text:'二晩寝かせるとよりしっとり美味しくなります。切り分ける前にコアパウダーをふるうと見た目もきれいに仕上がります。',photo:''},
    sup:null},
 
+  {id:8,cat:'sweets',emoji:'🍨',bg:'#E1F5EE',
+   photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%A8%E3%83%BC%E3%82%B0%E3%83%AB%E3%83%88%E3%82%A2%E3%82%A4%E3%82%B9.webp'],
+   title:'ヨーグルトで腸活アイス',
+   desc:'チャック付き袋に入れて揉むだけ！ヨーグルト×バナナで腸活できる手軽なアイス。',
+   time:'10分＋冷凍4時間',kcal:'約100kcal/食',
+   tools:null,ingPhoto:'',
+   ing:[{n:'プレーンヨーグルト',a:'400g'},{n:'バナナ',a:'2本'},{n:'はちみつ',a:'20g'}],
+   steps:[
+     {text:'チャック付き袋にはちみつを先に入れる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%A8%E3%83%BC%E3%82%B0%E3%83%AB%E3%83%88%E3%82%A2%E3%82%A4%E3%82%B9%EF%BC%91.webp'},
+     {text:'バナナとヨーグルトを加え、袋の上からバナナをつぶして全体を混ぜる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%A8%E3%83%BC%E3%82%B0%E3%83%AB%E3%83%88%E3%82%A2%E3%82%A4%E3%82%B9%EF%BC%92.webp'},
+     {text:'冷凍庫で4時間以上冷やし固め、固まったら割って食べる。',photo:''},
+   ],
+   tip:null,sup:null},
+
   {id:7,cat:'sweets',emoji:'🍧',bg:'#E6F1FB',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%81%BE%E3%82%8B%E3%81%94%E3%81%A8%E3%82%A2%E3%82%A4%E3%82%B9.webp'],
    title:'まるごとバナナアイス',
    desc:'皮を剥いてラップで巻いて冷凍するだけ。添加物ゼロの自然なアイス。',
    time:'5分＋冷凍3時間',kcal:'約85kcal/本',
+   tools:null,ingPhoto:'',
    ing:[{n:'バナナ',a:'1本'}],
    steps:[
      {text:'バナナの皮を剥く。',photo:''},
@@ -324,25 +355,12 @@ const R=[
    tip:{text:'皮ごと冷凍すると食べるときに剥けなくなるので必ず皮を剥いてから。バナナが安い時にまとめて作り置きするのがおすすめ。',photo:''},
    sup:null},
 
-  {id:8,cat:'sweets',emoji:'🍨',bg:'#E1F5EE',
-   photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%A8%E3%83%BC%E3%82%B0%E3%83%AB%E3%83%88%E3%82%A2%E3%82%A4%E3%82%B9.webp'],
-   title:'ヨーグルトで腸活アイス',
-   desc:'チャック付き袋に入れて揉むだけ！ヨーグルト×バナナで腸活できる手軽なアイス。',
-   time:'10分＋冷凍4時間',kcal:'約100kcal/食',
-   ing:[{n:'プレーンヨーグルト',a:'400g'},{n:'バナナ',a:'2本'},{n:'はちみつ',a:'20g'}],
-   steps:[
-     {text:'チャック付き袋にはちみつを先に入れる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%A8%E3%83%BC%E3%82%B0%E3%83%AB%E3%83%88%E3%82%A2%E3%82%A4%E3%82%B9%EF%BC%91.webp'},
-     {text:'バナナとヨーグルトを加え、袋の上からバナナをつぶして全体を混ぜる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%A8%E3%83%BC%E3%82%B0%E3%83%AB%E3%83%88%E3%82%A2%E3%82%A4%E3%82%B9%EF%BC%92.webp'},
-     {text:'冷凍庫で4時間以上冷やし固め、固まったら割って食べる。',photo:''},
-   ],
-   tip:null,
-   sup:null},
-
   {id:9,cat:'sweets',emoji:'🍷',bg:'#EEEDFE',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/ブルベリー寒天ゼリー.webp'],
    title:'ブルーベリー寒天ゼリー',
    desc:'ゼラチンより食物繊維が多い寒天を使用。低カロリーで腸活効果も期待できるゼリー。',
    time:'15分＋冷やし3時間',kcal:'約25kcal/個',
+   tools:null,ingPhoto:'',
    ing:[{n:'水',a:'800cc'},{n:'寒天',a:'5g'},{n:'砂糖',a:'大さじ3'},{n:'冷凍ブルーベリー',a:'4〜5粒×10容器分'},{n:'レモン汁',a:'小さじ1（容器ごと）'}],
    steps:[
      {text:'寒天は一晩水に浸けておく（商品の袋の指示を確認）。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/ブルベリー寒天ゼリー１.webp'},
@@ -359,6 +377,7 @@ const R=[
    title:'しっとり鶏ハム',
    desc:'沸騰したら火を止めて放置するだけ。エコで簡単な低カロリー高タンパクの定番レシピ。アレンジアイデアも必見！',
    time:'一晩＋3時間放置',kcal:'約115kcal/枚',
+   tools:null,ingPhoto:'',
    ing:[{n:'鶏むね肉',a:'1枚'},{n:'塩',a:'大さじ1'},{n:'砂糖',a:'大さじ1'}],
    steps:[
      {text:'鶏むね肉をチャック付き袋に入れ、塩と砂糖を揉み込んで一晩寝かせる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E9%B6%8F%E3%83%8F%E3%83%A01.webp'},
@@ -380,6 +399,7 @@ const R=[
    title:'ひき肉ボールの長芋蒸し',
    desc:'フライパンひとつで完結！豆腐入りふんわりひき肉に長芋のとろみが絡む体にやさしい蒸し物。',
    time:'25分',kcal:'約170kcal/食',
+   tools:null,ingPhoto:'',
    ing:[{n:'豚ひき肉',a:'200g'},{n:'豆腐',a:'150g'},{n:'塩・コショウ',a:'各小さじ1/2'},{n:'長芋',a:'100g'},{n:'片栗粉',a:'小さじ1'},{n:'料理酒',a:'大さじ2'},{n:'水',a:'大さじ2'},{n:'醤油',a:'小さじ1/2'}],
    steps:[
      {text:'ひき肉・豆腐・塩・コショウをフライパンに直接入れ、ビニール手袋でよく混ぜ、平らに広げる。',photo:''},
@@ -394,6 +414,7 @@ const R=[
    title:'納豆揚げ',
    desc:'TV「孤独のグルメ」で知った栃木の郷土料理。外はカリッ、中はとろっで食べやすい一品。',
    time:'20分',kcal:'約150kcal/食',
+   tools:null,ingPhoto:'',
    ing:[{n:'納豆',a:'2パック'},{n:'油揚げ（小）',a:'8枚'},{n:'チーズ',a:'大さじ4'},{n:'醤油',a:'少々'}],
    steps:[
      {text:'油揚げの端を切り、袋状に開いて油抜きしておく。袋状にしたら裏返す。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E7%B4%8D%E8%B1%86%E6%8F%9A%E3%81%921.webp'},
@@ -408,6 +429,7 @@ const R=[
    title:'超簡単カッテージチーズ',
    desc:'牛乳と酢だけで作れる手作りチーズ。高タンパク低脂肪でトーストに塗っても美味しい。',
    time:'15分',kcal:'約60kcal/食',
+   tools:null,ingPhoto:'',
    ing:[{n:'牛乳',a:'500ml'},{n:'酢',a:'大さじ2'},{n:'塩',a:'小さじ1/2'},{n:'コショウ',a:'少々'}],
    steps:[
      {text:'鍋に牛乳を入れて中火で温め、底が焦げないよう時々混ぜる。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%82%AB%E3%83%83%E3%83%86%E3%83%BC%E3%82%B8%E3%83%81%E3%83%BC%E3%82%BA%EF%BC%91.webp'},
@@ -415,13 +437,14 @@ const R=[
      {text:'キッチンペーパーを敷いたざるで濾し、塩コショウを混ぜて完成。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%82%AB%E3%83%83%E3%83%86%E3%83%BC%E3%82%B8%E3%83%81%E3%83%BC%E3%82%BA%EF%BC%93.webp'},
    ],
    tip:{text:'冷蔵で約1週間保存可能。冷凍する場合はジップロックなどの袋に薄く伸ばしておくと使いたい分だけ割って使えて便利です。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%82%AB%E3%83%83%E3%83%86%E3%83%BC%E3%82%B8%E3%83%81%E3%83%BC%E3%82%BA%EF%BC%95.webp'},
-   sup:{text:'見た目はボロボロとしたチーズですが、パンにもしっかり塗れる、お気に入りのレシピになっています。', photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%82%AB%E3%83%83%E3%83%86%E3%83%BC%E3%82%B8%E3%83%81%E3%83%BC%E3%82%BA%EF%BC%94.webp'}},
+   sup:{text:'見た目はボロボロとしたチーズですが、パンにもしっかり塗れる、お気に入りのレシピになっています。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%82%AB%E3%83%83%E3%83%86%E3%83%BC%E3%82%B8%E3%83%81%E3%83%BC%E3%82%BA%EF%BC%94.webp'}},
 
   {id:17,cat:'dish',emoji:'🍞',bg:'#FAEEDA',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%83%81%E3%83%BC%E3%82%BA%E3%83%88%E3%83%BC%E3%82%B9%E3%83%88.webp'],
    title:'ズボラでも続く食パン',
    desc:'こねなくてOK！材料5つをまとめて発酵させ、ホームベーカリーで焼くだけの簡単食パン。',
    time:'3時間30分（発酵含む）',kcal:'約160kcal/枚',
+   tools:null,ingPhoto:'',
    ing:[{n:'小麦粉',a:'300g'},{n:'50〜60℃のお湯',a:'200cc'},{n:'イースト菌（酵母）',a:'小さじ1'},{n:'塩',a:'小さじ1'},{n:'砂糖',a:'大さじ1'}],
    steps:[
      {text:'お湯以外の材料をボールに入れ、イースト菌の部分からお湯をかけ、ひとまとめにする（こねなくてOK）。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E9%A3%9F%E3%83%91%E3%83%B31.webp'},
@@ -430,13 +453,14 @@ const R=[
      {text:'ラップを外してホームベーカリーの焼きモードで35分焼いて完成。',photo:''},
    ],
    tip:{text:'さらにダイエット効果を高めたい場合、砂糖を酒粕に置き換えるのも。冬は温かい場所で発酵させると膨らみやすくなります。',photo:''},
-   sup:{text:'等分する際はゴムベラやスクレーパーがあれば便利です。なければ、しゃもじでも代用可。また、100均のビニール手袋があれば手が汚れないので便利です。', photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E9%A3%9F%E3%83%91%E3%83%B3%E4%BD%9C%E3%82%8A%E5%99%A8%E5%85%B7.webp'}},
+   sup:{text:'等分する際はゴムベラやスクレーパーがあれば便利です。なければ、しゃもじでも代用可。また、100均のビニール手袋があれば手が汚れないので便利です。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E9%A3%9F%E3%83%91%E3%83%B3%E4%BD%9C%E3%82%8A%E5%99%A8%E5%85%B7.webp'}},
 
   {id:18,cat:'dish',emoji:'🫓',bg:'#EAF3DE',
    photos:['https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%81%A1%E3%81%8E%E3%82%8A%E9%A3%9F%E3%83%91%E3%83%B3.webp'],
    title:'包丁なしちぎり食パン',
    desc:'6等分に丸めて並べて焼くだけ。包丁もナイフも不要で手でちぎって食べる楽しいパン。',
    time:'3時間30分（発酵含む）',kcal:'約160kcal/個',
+   tools:null,ingPhoto:'',
    ing:[{n:'小麦粉',a:'300g'},{n:'50〜60℃のお湯',a:'200cc'},{n:'イースト菌（酵母）',a:'小さじ1'},{n:'塩',a:'小さじ1'},{n:'砂糖',a:'大さじ1'}],
    steps:[
      {text:'お湯以外の材料をボールに入れ、イースト菌の部分からお湯をかけ、ひとまとめにする（こねなくてOK）。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E9%A3%9F%E3%83%91%E3%83%B3%EF%BC%92.webp'},
@@ -447,7 +471,7 @@ const R=[
      {text:'焼き上がったら手でちぎって完成。',photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/%E3%81%A1%E3%81%8E%E3%82%8A%E9%A3%9F%E3%83%91%E3%83%B3%EF%BC%96.webp'},
    ],
    tip:{text:'ちぎり食パンは小さく見えますが食パン1枚分以上の重さがあります。お湯を牛乳に変えたりナッツを入れるとアレンジも楽しめます。',photo:''},
-   sup:{text:'焼きあがった食パンをナイフでカットするのが嫌な場合に、ちぎるスタイルがおすすめです。', photo:'https://raw.githubusercontent.com/Yui-ottodiet/diet-recipe/main/ファイル名.webp'}},
+   sup:{text:'焼きあがった食パンをナイフでカットするのが嫌な場合に、ちぎるスタイルがおすすめです。',photo:''}},
 ];
 
 let currentTab='dish',currentR=null,favs=new Set();
@@ -522,6 +546,21 @@ function showDetail(id){
   document.getElementById('dDesc').textContent=r.desc;
   document.getElementById('dTime').textContent=r.time;
   document.getElementById('dKcal').textContent=r.kcal;
+
+  // 使用する器具
+  const toolsWrap=document.getElementById('dToolsWrap');
+  if(r.tools&&r.tools.items&&r.tools.items.length>0){
+    const toolsPhotoHtml=r.tools.photo
+      ?`<img src="${r.tools.photo}" alt="使用する器具" class="tools-photo" onerror="this.style.display='none'">`:'';
+    const toolsItems=r.tools.items.map(t=>`<div class="tools-item"><span class="tools-bullet">・</span><span>${t}</span></div>`).join('');
+    toolsWrap.innerHTML=`<div class="sec-h">使用する器具</div><div class="tools-box">${toolsPhotoHtml}${toolsItems}</div>`;
+  } else {toolsWrap.innerHTML='';}
+
+  // 材料写真
+  const ingPhotoEl=document.getElementById('dIngPhoto');
+  ingPhotoEl.innerHTML=r.ingPhoto
+    ?`<img src="${r.ingPhoto}" alt="材料" class="ing-photo" onerror="this.style.display='none'">` :'';
+
   const dotClass=isS?'ing-dot ing-dot-s':'ing-dot ing-dot-d';
   document.getElementById('dIng').innerHTML=r.ing.map(i=>
     `<div class="ing-row"><div class="${dotClass}"></div><span class="ing-n">${i.n}</span><span class="ing-a">${i.a}</span></div>`
@@ -547,19 +586,16 @@ function showDetail(id){
     const lblClass=isS?'tip-label tip-label-s':'tip-label tip-label-d';
     const txtClass=isS?'tip-text tip-text-s':'tip-text tip-text-d';
     const tipPhotoHtml=r.tip.photo
-      ?`<img src="${r.tip.photo}" alt="ワンポイント" class="tip-photo" onerror="this.style.display='none'">`
-      :'';
+      ?`<img src="${r.tip.photo}" alt="ワンポイント" class="tip-photo" onerror="this.style.display='none'">`:'';
     tipWrap.innerHTML=`<div class="${boxClass}"><div class="${lblClass}">ワンポイントアドバイス</div><div class="${txtClass}">${r.tip.text}</div>${tipPhotoHtml}</div>`;
   } else {tipWrap.innerHTML='';}
 
   // 補足
   const supWrap=document.getElementById('dSupWrap');
   if(r.sup){
-    const supClass=isS?'sup-box sup-box-s':'sup-box sup-box-d';
     const supPhotoHtml=r.sup.photo
-      ?`<img src="${r.sup.photo}" alt="補足" class="sup-photo" onerror="this.style.display='none'">`
-      :'';
-    supWrap.innerHTML=`<div class="${supClass}"><div class="sup-label">補足</div><div class="sup-text">${r.sup.text}</div>${supPhotoHtml}</div>`;
+      ?`<img src="${r.sup.photo}" alt="補足" class="sup-photo" onerror="this.style.display='none'">`:'';
+    supWrap.innerHTML=`<div class="sup-box"><div class="sup-label">補足</div><div class="sup-text">${r.sup.text}</div>${supPhotoHtml}</div>`;
   } else {supWrap.innerHTML='';}
 
   document.getElementById('dFavBtn').textContent=favs.has(id)?'♥ お気に入り済み':'♡ お気に入りに追加';
